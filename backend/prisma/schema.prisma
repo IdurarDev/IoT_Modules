@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Module {
+  id                      Int @id @default(autoincrement())
+  mesure                  String
+  duringFunctionning      Int
+  state                   Boolean @default(true)
+  dataSend                String
+  types                   TypeModule[]
+  history                 Histories[]
+  TicketCounting          TicketCounting[]
+} 
+
+model TypeModule {
+  id              Int @id @default(autoincrement())
+  name            String
+  module          Module @relation(fields: [moduleId], references: [id])
+  moduleId        Int
+}
+
+model Vehicule {
+  id              Int @id @default(autoincrement())
+  name            String 
+  types           TypeVehicule[]
+  history         Histories[]
+}
+
+model TypeVehicule {
+  id              Int @id @default(autoincrement())
+  name            String 
+  vehicule        Vehicule @relation(fields: [vehiculeId], references: [id])
+  vehiculeId      Int
+}
+
+model Histories {
+  id              Int @id @default(autoincrement())
+  vehicule        Vehicule @relation(fields: [vehiculeId], references: [id])
+  vehiculeId      Int
+  module          Module @relation(fields: [moduleId], references: [id])
+  moduleId        Int
+}
+
+model TicketCounting {
+  id              Int @id @default(autoincrement())
+  count           Int
+  module          Module @relation(fields: [moduleId], references: [id])
+  moduleId        Int
+}
